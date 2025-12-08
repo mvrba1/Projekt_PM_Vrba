@@ -1,0 +1,25 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-header collapse="fade" class="ion-no-border">
+    <ion-toolbar>
+      <ion-title style="padding-top: 15px;" size="large">Vyhledání týmu</ion-title>
+      <img slot="end" src="assets/icon/icon.png" alt="App Icon" class="header-icon" />
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list>
+    <ion-item>
+      <ion-input [(ngModel)]="name" type="text" placeholder="Název týmu"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-button (click)="onGetInfo()" expand="block" fill="solid" shape="round" class="ion-padding">
+    <ion-icon slot="start" name="search"></ion-icon>
+    <ion-label>Získat info o týmu</ion-label>
+  </ion-button>
+
+  <ion-button (click)="onSave()" color="success" expand="block" fill="solid" shape="round" class="ion-padding" style="padding-top: 1%;">
+    <ion-icon slot="start" name="star"></ion-icon>
+    <ion-label>Přidat do oblíbených</ion-label>
+  </ion-button>
+
+</ion-content>

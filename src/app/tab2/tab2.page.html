@@ -1,0 +1,29 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-card>
+    <ion-header collapse="fade" class="ion-no-border">
+      <ion-toolbar>
+        <ion-title style="padding-top: 15px;" size="large">Oblíbené týmy</ion-title>
+        <img slot="end" src="assets/icon/icon.png" alt="App Icon" class="header-icon" />
+      </ion-toolbar>
+    </ion-header>
+    <ion-card-content>
+      <ion-list>
+        @for (favourite of favouriteService.favourites; track favourite.uuid) {
+          <ion-item>
+            <ion-label>{{ favourite.name }}</ion-label>
+            <ion-button size="medium" (click)="onGetInfo(favourite)" color="primary" expand="block" fill="solid" shape="round">
+              <ion-icon slot="icon-only" name="search"></ion-icon>
+            </ion-button>
+            <ion-button size="medium" (click)="onRemove(favourite)" color="danger" expand="block" fill="solid" shape="round">
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-button>
+          </ion-item>
+        } @empty {
+          <ion-item>
+            <ion-label>Nemáte žádné oblíbené týmy</ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
