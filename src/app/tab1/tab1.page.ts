@@ -8,10 +8,14 @@ import {
 
 import { ExternalApiServiceService } from '../services/api-external.service';
 import { ExternalApiResponse, Team } from '../services/api-response';
-import { search, star } from 'ionicons/icons';
+import { 
+  search, star, heart, heartOutline, informationCircle,
+  football, location, trophy, business, calendar, globe,
+  logoFacebook, logoTwitter, logoInstagram 
+} from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { FormsModule } from '@angular/forms';
-import { FavouriteService, SavedFavourites } from '../services/favourite.service';
+import { FavouriteService } from '../services/favourite.service';
 import { Router } from '@angular/router';
 
 
@@ -43,7 +47,11 @@ export class Tab1Page {
     public favouriteService: FavouriteService,
     private router: Router
   ) {
-    addIcons({ star, search });
+    addIcons({ 
+      star, search, heart, heartOutline, informationCircle,
+      football, location, trophy, business, calendar, globe,
+      logoFacebook, logoTwitter, logoInstagram 
+    });
   }
 
   toggleDetails(team?: Team) {
@@ -77,29 +85,19 @@ export class Tab1Page {
     });
   }
 
-  async onSave() {
-    if (this.name.trim().length === 0) {
-      alert('Zadejte název týmu');
-      return;
+  async onAddFavourite(team: Team) {
+    if (!team) return;
+    
+    const added = await this.favouriteService.addToFavorites(team);
+    if (added) {
+      alert(`${team.displayName || team.strTeam} byl přidán do oblíbených`);
+    } else {
+      alert(`${team.displayName || team.strTeam} je již v oblíbených`);
     }
-
-    const favourite: SavedFavourites = { 
-      name: this.name, 
-      uuid: crypto.randomUUID() 
-    };
-
-    await this.favouriteService.add(favourite);
-    this.name = '';
   }
 
-  async onAddFavourite(team: Team) {
-    const name = team?.strTeam || team?.displayName || this.name?.trim();
-    if (!name) return;
-    const favourite: SavedFavourites = {
-      name,
-      uuid: crypto.randomUUID(),
-    };
-    await this.favouriteService.add(favourite);
+  isFavorite(team: Team): boolean {
+    return team ? this.favouriteService.isFavorite(team.idTeam) : false;
   }
 
   ionViewWillEnter() {

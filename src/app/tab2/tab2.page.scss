@@ -9,3 +9,55 @@ h1 {
     object-fit: cover;
     padding: 1px;
 }
+
+.team-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.detail-card {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  
+  ion-list {
+    background: transparent;
+    
+    ion-item {
+      --padding-start: 0;
+      --inner-padding-end: 0;
+      --border-color: rgba(var(--ion-color-medium-rgb), 0.2);
+      
+      h3 {
+        font-size: 0.85em;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--ion-color-medium);
+        margin: 0 0 4px 0;
+      }
+      
+      p {
+        font-size: 1em;
+        margin: 0;
+        color: var(--ion-text-color);
+      }
+    }
+  }
+}
+
+.detail-image-container {
+  ion-img {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  }
+}
+
+ion-badge {
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 0.85em;
+}
