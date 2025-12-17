@@ -67,6 +67,8 @@ export interface Team {
   strEquipment: string
   strYoutube: string
   strLocked: string
+  displayName?: string
+  primaryImage?: string
 }
 
-  
+

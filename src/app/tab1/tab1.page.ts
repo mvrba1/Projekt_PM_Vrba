@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { 
   IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonList, IonItem, 
   IonIcon, IonInput, IonButton, IonCard, IonCardHeader, 
@@ -6,7 +7,7 @@ import {
 } from '@ionic/angular/standalone';
 
 import { ExternalApiServiceService } from '../services/api-external.service';
-import { ExternalApiResponse } from '../services/api-response';
+import { ExternalApiResponse, Team } from '../services/api-response';
 import { search, star } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +21,9 @@ import { Router } from '@angular/router';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   imports: [
-    IonImg, IonCardContent, IonCard, FormsModule, IonButton,
+    CommonModule,
+    IonImg, IonCardHeader, IonCardTitle, IonCardContent, IonCard,
+    FormsModule, IonButton,
     IonHeader, IonToolbar, IonTitle, IonContent, IonList,
     IonInput, IonItem, IonLabel, IonIcon
   ],
@@ -29,8 +32,11 @@ export class Tab1Page {
 
   numObject?: ExternalApiResponse | null = null;
   @Input() name = '';
+  results: Team[] = [];
   teamName?: string;
   showDetail = false;
+  loading = false;
+  selectedTeam?: Team;
 
   constructor(
     private apiService: ExternalApiServiceService,
@@ -40,24 +46,35 @@ export class Tab1Page {
     addIcons({ star, search });
   }
 
-  toggleDetails() {
+  toggleDetails(team?: Team) {
+    this.selectedTeam = team || undefined;
     this.showDetail = !this.showDetail;
   }
 
   async onGetInfo() {
-    if (this.name.trim().length === 0) {
+    const q = this.name.trim();
+    if (q.length === 0) {
       alert('Zadejte název týmu');
       return;
     }
-
-    this.numObject = await this.apiService.getInfo(this.name);
-
-    if (!this.numObject?.teams) {
-      alert('Tým s názvem ' + this.name + ' nenalezen');
-      return;
-    }
-
-    console.log('Nalezen tým:', this.numObject.teams[0].strTeam);
+    this.loading = true;
+    this.apiService.searchTeams$(q).subscribe({
+      next: (teams) => {
+        const filtered = q.length === 1
+          ? teams.filter(t => (t.strTeam || '').toLowerCase().startsWith(q.toLowerCase()))
+          : teams;
+        this.results = filtered;
+        this.loading = false;
+        if (!filtered.length) {
+          alert('Žádný tým nenalezen');
+        }
+      },
+      error: () => {
+        this.results = [];
+        this.loading = false;
+        alert('Chyba při načítání dat. Zkuste to později.');
+      }
+    });
   }
 
   async onSave() {
@@ -73,6 +90,16 @@ export class Tab1Page {
 
     await this.favouriteService.add(favourite);
     this.name = '';
+  }
+
+  async onAddFavourite(team: Team) {
+    const name = team?.strTeam || team?.displayName || this.name?.trim();
+    if (!name) return;
+    const favourite: SavedFavourites = {
+      name,
+      uuid: crypto.randomUUID(),
+    };
+    await this.favouriteService.add(favourite);
   }
 
   ionViewWillEnter() {
